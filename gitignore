@@ -1,0 +1,6 @@
+# all bin
+*.out
+
+# Precompiled Headers
+*.gch
+*.pch
