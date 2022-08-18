@@ -19,6 +19,10 @@ void delete_pos(BTree **ptrPtr, unsigned int pos);
 BTree *ordinsert_rec_valore(BTree *ptr, int val);
 unsigned int size(BTree *ptr); // trova quanti nodi ha l'albero.
 int min(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
+int max(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
+
+// funzioni HELPER
+// void meccanismo_precedente(BTree **ptrPtr, unsigned int pos);
 
 // opzioni globali.
 char simmetrica[20]  = "simmetrica"; 
@@ -36,7 +40,7 @@ int main() {
 
   // inserimento di un paio di nodi.
   albero = ordinsert_rec_valore(albero, 1);
-  albero = ordinsert_rec_valore(albero, 6);
+  // albero = ordinsert_rec_valore(albero, 6);
   albero = ordinsert_rec_valore(albero, 2);
   albero = ordinsert_rec_valore(albero, 3);
   // stampa ricorsiva dei nodi inseriti.
@@ -47,6 +51,9 @@ int main() {
   printf("\nL'albero contiene %d? %d\n", target, search_rec(albero, target));
   printf("il numero di nodi che l'albero detiene: %d\n", size(albero));
   printf("il valore minimo che l'albero detiene: %d\n", min(albero));
+  printf("il valore massimo che l'albero detiene: %d\n", max(albero));
+
+  // delete_pos(&albero, 2);
 }
 
 void init(BTree **ptrPtr) {
@@ -109,7 +116,7 @@ void print_simmetry(BTree *ptr) {
   if (ptr != NULL) {
 
     print_simmetry(ptr->leftPtr);
-    printf("%d ", ptr->valore);
+    printf("%d ", ptr->valore); // visita simmetrica
     print_simmetry(ptr->rightPtr);
   }
 }
@@ -145,4 +152,63 @@ int min(BTree *ptrPtr) {
     ptrPtr = ptrPtr->leftPtr; // questo vale per un'osservazione fatta.
   }
   return ptrPtr->valore;
+}
+
+int max(BTree *ptrPtr) {
+  while(ptrPtr->rightPtr != NULL) {
+    ptrPtr = ptrPtr->rightPtr; // questo vale per un'osservazione fatta.
+  }
+  return ptrPtr->valore;
+}
+
+/*
+void delete_pos(BTree **ptrPtr, unsigned int pos) {
+  if((*ptrPtr) == NULL) { // caso base... nodo non trovato
+    return;
+  } else {
+    if (pos != (*ptrPtr)->valore) { // nodo non trovato momentaneamente.
+      if (pos <= (*ptrPtr)->valore) {
+        // andiamo a sinistra.
+        delete_pos(&((*ptrPtr)->leftPtr), pos);
+      } else {
+        // andiamo a destra.
+        delete_pos(&((*ptrPtr)->rightPtr), pos);
+      }
+    } else { // nodo trovato.
+      // fare dal passo tre.
+      // cercare tutti i nodi figli.
+      int n_nodi_figli = size((*ptrPtr));
+      printf("trovato il nodo da eliminare; questo ha %d nodi figli\n", n_nodi_figli - 1);
+      int nodi_figli[n_nodi_figli];
+      for (int i = 0; i < n_nodi_figli; i++) {
+      }
+    }
+  }
+}
+*/
+
+void delete_pos(BTree **ptrPtr, unsigned int pos) {
+  if ((*ptrPtr) == NULL) { // caso in cui non abbia trovato il nodo desiderato.
+    return; 
+  } else if ((*ptrPtr)->valore == pos) {
+    return; // ritorno al nodo precedente.
+  } else {
+    if (pos <= (*ptrPtr)->valore) {
+      // andiamo a sinistra.
+      delete_pos(&((*ptrPtr)->leftPtr), pos);
+      
+      // nel caso l'if precedente ritorni
+      // l'esecuzione della procedura riprende
+      // da questo punto in poi.
+      
+    } else {
+      // andiamo a destra.
+      delete_pos(&((*ptrPtr)->rightPtr), pos);
+      
+      // nel caso l'if precedente ritorni
+      // l'esecuzione della procedura riprende
+      // da questo punto in poi.
+      
+    }
+  }
 }
