@@ -13,6 +13,7 @@ void init(BTree **ptrPtr); // funzione che sfrutta l'allocazione dinamica della 
 int isemtpy(BTree *ptr);
 int search_rec(BTree *ptr, int val);
 void print_rec(BTree *ptr, char *opt);
+void print_simmetry(BTree *ptr);
 void ordinsert_rec(BTree **ptrPtr, int val);
 BTree *ordinsert_rec_valore(BTree *ptr, int val);
 
@@ -31,17 +32,14 @@ int main() {
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
   // inserimento di un paio di nodi.
-  ordinsert_rec_valore(albero, 1);
-  
-  ordinsert_rec_valore(albero, 6);
-  ordinsert_rec_valore(albero, 0);
+  albero = ordinsert_rec_valore(albero, 1);
+  albero = ordinsert_rec_valore(albero, 6);
+  albero = ordinsert_rec_valore(albero, 0);
 
   // stampa ricorsiva dei nodi inseriti.
-  print_rec(albero, simmetrica);
+  print_simmetry(albero);
+  printf("\n");
   /*
-  printf("indirizzo heap radice: %p.\n", albero);
-  printf("indirizzo heap radice->left: %p.\n", albero->leftPtr);
-  printf("indirizzo heap radice->right: %p.\n", albero->rightPtr);
   print_rec(albero, post_ordine);
   printf("\n");
 
@@ -106,6 +104,15 @@ void print_rec(BTree *ptr, char *opt) {
   }
 }
 
+void print_simmetry(BTree *ptr) {
+  if (ptr != NULL) {
+
+    print_simmetry(ptr->leftPtr);
+    printf("%d ", ptr->valore);
+    print_simmetry(ptr->rightPtr);
+  }
+}
+
 BTree *ordinsert_rec_valore(BTree *ptr, int val) {
   if (ptr == NULL) {
     // allocare dinamicamente un nuovo puntatore.
@@ -114,11 +121,10 @@ BTree *ordinsert_rec_valore(BTree *ptr, int val) {
     ptr->leftPtr  = NULL;
     ptr->rightPtr = NULL;
   } else {
-    if (val <= ptr->valore) {
+    if (val <= ptr->valore)
       ptr->leftPtr  = ordinsert_rec_valore(ptr->leftPtr, val);
-    } else {
+    else 
       ptr->rightPtr = ordinsert_rec_valore(ptr->rightPtr, val);
-    }
   }
   return ptr;
 }
