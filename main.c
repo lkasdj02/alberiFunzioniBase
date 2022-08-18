@@ -31,13 +31,13 @@ int main() {
   init(&albero);
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
-  albero = ordinsert_rec_valore(albero, 2);
+  albero = ordinsert_rec_valore(albero, 4);
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
   // inserimento di un paio di nodi.
   albero = ordinsert_rec_valore(albero, 1);
   albero = ordinsert_rec_valore(albero, 6);
-  albero = ordinsert_rec_valore(albero, 0);
+  albero = ordinsert_rec_valore(albero, 2);
   albero = ordinsert_rec_valore(albero, 3);
   // stampa ricorsiva dei nodi inseriti.
   print_simmetry(albero);
@@ -131,8 +131,8 @@ BTree *ordinsert_rec_valore(BTree *ptr, int val) {
 }
 
 unsigned int size(BTree *ptr) {
-  unsigned int number_of_nodes = 0;
-  if (ptr != NULL) {
+  unsigned int number_of_nodes = 0; 
+  if (ptr != NULL) { // potenzialmente caso base.
     number_of_nodes++; // la radice l'ho trovata.
     number_of_nodes += size(ptr->leftPtr);
     number_of_nodes += size(ptr->rightPtr);
