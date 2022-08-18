@@ -14,6 +14,7 @@ int isemtpy(BTree *ptr);
 int search_rec(BTree *ptr, int val);
 void print_rec(BTree *ptr, char *opt);
 void ordinsert_rec(BTree **ptrPtr, int val);
+BTree *ordinsert_rec_valore(BTree *ptr, int val);
 
 // opzioni globali.
 char simmetrica[20]  = "simmetrica"; 
@@ -26,19 +27,24 @@ int main() {
   init(&albero);
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
-  ordinsert_rec(&albero, 2);
+  albero = ordinsert_rec_valore(albero, 2);
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
   // inserimento di un paio di nodi.
   ordinsert_rec(&albero, 1);
   ordinsert_rec(&albero, 6);
   ordinsert_rec(&albero, 0);
-  
+
+  printf("indirizzo heap radice: %p.\n", albero);
+  printf("indirizzo heap radice->left: %p.\n", albero->leftPtr);
+  printf("indirizzo heap radice->right: %p.\n", albero->rightPtr);
   print_rec(albero, post_ordine);
   printf("\n");
 
+  /*
   int target = 7;
   printf("\nL'albero contiene %d? %d\n", target, search_rec(albero, target));
+    */
 }
 
 void init(BTree **ptrPtr) {
@@ -83,16 +89,34 @@ void ordinsert_rec(BTree **ptrPtr, int val) {
 void print_rec(BTree *ptr, char *opt) {
   if (ptr != NULL) {
     if (strcmp("pre_ordine", opt) == 0)
-      printf("%d ", ptr->valore);
+      printf("valore: %d \t indirizzo di ptr: %p \t indirizzo contenuto in ptr: %p\n", ptr->valore, &ptr, ptr);
 
     print_rec(ptr->leftPtr, opt);
 
     if (strcmp("simmetrica", opt) == 0)
-      printf("%d ", ptr->valore);
+      printf("valore: %d \t indirizzo di ptr: %p \t indirizzo contenuto in ptr: %p\n", ptr->valore, &ptr, ptr);
 
     print_rec(ptr->rightPtr, opt);
 
     if (strcmp("post_ordine", opt) == 0)
-      printf("%d ", ptr->valore);
+      printf("valore: %d \t indirizzo di ptr: %p \t indirizzo contenuto in ptr: %p\n", ptr->valore, &ptr, ptr);
   }
+}
+
+BTree *ordinsert_rec_valore(BTree *ptr, int val) {
+  BTree *radice = ptr;
+  if(ptr != NULL) {
+    if (val <= ptr->valore) {
+      ordinsert_rec_valore(ptr->leftPtr, val); // passiamo il riferimento al puntatore al nodo di sinistra.
+    } else if (val > ptr->valore) {
+      ordinsert_rec_valore(ptr->rightPtr, val); // idem per quello di destra.
+    }
+  } else {
+    ptr = (BTree *)malloc(sizeof(BTree)); // allocare lo spazio nella heap per questo nodo.
+    ptr->valore   = val;
+    ptr->leftPtr  = NULL;
+    ptr->rightPtr = NULL;
+    return ptr;
+  } 
+  return radice;
 }
