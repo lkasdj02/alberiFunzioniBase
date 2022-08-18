@@ -15,7 +15,10 @@ int search_rec(BTree *ptr, int val);
 void print_rec(BTree *ptr, char *opt);
 void print_simmetry(BTree *ptr);
 void ordinsert_rec(BTree **ptrPtr, int val);
+void delete_pos(BTree **ptrPtr, unsigned int pos);
 BTree *ordinsert_rec_valore(BTree *ptr, int val);
+unsigned int size(BTree *ptr); // trova quanti nodi ha l'albero.
+int min(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
 
 // opzioni globali.
 char simmetrica[20]  = "simmetrica"; 
@@ -35,17 +38,15 @@ int main() {
   albero = ordinsert_rec_valore(albero, 1);
   albero = ordinsert_rec_valore(albero, 6);
   albero = ordinsert_rec_valore(albero, 0);
-
+  albero = ordinsert_rec_valore(albero, 3);
   // stampa ricorsiva dei nodi inseriti.
   print_simmetry(albero);
-  printf("\n");
-  /*
-  print_rec(albero, post_ordine);
   printf("\n");
 
   int target = 7;
   printf("\nL'albero contiene %d? %d\n", target, search_rec(albero, target));
-    */
+  printf("il numero di nodi che l'albero detiene: %d\n", size(albero));
+  printf("il valore minimo che l'albero detiene: %d\n", min(albero));
 }
 
 void init(BTree **ptrPtr) {
@@ -127,4 +128,21 @@ BTree *ordinsert_rec_valore(BTree *ptr, int val) {
       ptr->rightPtr = ordinsert_rec_valore(ptr->rightPtr, val);
   }
   return ptr;
+}
+
+unsigned int size(BTree *ptr) {
+  unsigned int number_of_nodes = 0;
+  if (ptr != NULL) {
+    number_of_nodes++; // la radice l'ho trovata.
+    number_of_nodes += size(ptr->leftPtr);
+    number_of_nodes += size(ptr->rightPtr);
+  }
+  return number_of_nodes;
+}
+
+int min(BTree *ptrPtr) {
+  while(ptrPtr->leftPtr != NULL) {
+    ptrPtr = ptrPtr->leftPtr; // questo vale per un'osservazione fatta.
+  }
+  return ptrPtr->valore;
 }
