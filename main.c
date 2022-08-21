@@ -39,10 +39,12 @@ int main() {
   (isemtpy(albero)) ? printf("albero vuoto\n") : printf("albero NON vuoto\n");
 
   // inserimento di un paio di nodi.
-  albero = ordinsert_rec_valore(albero, 1);
-  // albero = ordinsert_rec_valore(albero, 6);
+
   albero = ordinsert_rec_valore(albero, 2);
+  albero = ordinsert_rec_valore(albero, 1);
+  albero = ordinsert_rec_valore(albero, 6);
   albero = ordinsert_rec_valore(albero, 3);
+
   // stampa ricorsiva dei nodi inseriti.
   print_simmetry(albero);
   printf("\n");
@@ -52,9 +54,14 @@ int main() {
   printf("il numero di nodi che l'albero detiene: %d\n", size(albero));
   printf("il valore minimo che l'albero detiene: %d\n", min(albero));
 
-  printf("il valore massimo che l'albero detiene: %d. \n si trova all'indirizzo di heap: %p.\n", (adress_max(albero))->valore, adress_max(albero));
+  printf("il valore massimo che il sotto albero di sinistra detiene: %d. \n si trova all'indirizzo di heap: %p.\n", (adress_max(albero->leftPtr))->valore, adress_max(albero));
 
-  // delete_pos(&albero, 2);
+  // eliminazione di un nodo
+  delete_pos(&albero, 6);
+  delete_pos(&albero, 4);
+  print_simmetry(albero);
+  printf("\n");
+
 }
 
 void init(BTree **ptrPtr) {
@@ -121,7 +128,6 @@ void print_simmetry(BTree *ptr) {
     print_simmetry(ptr->rightPtr);
   }
 }
-
 BTree *ordinsert_rec_valore(BTree *ptr, int val) {
   if (ptr == NULL) {
     // allocare dinamicamente un nuovo puntatore.
@@ -164,8 +170,8 @@ int max(BTree *ptrPtr) {
 
 BTree *adress_max(BTree *ptrPtr) {
   BTree *current = ptrPtr;
-  while(ptrPtr->rightPtr != NULL) {
-    ptrPtr = ptrPtr->rightPtr; // questo vale per un'osservazione fatta.
+  while(current->rightPtr != NULL) {
+    current = current->rightPtr; // questo vale per un'osservazione fatta.
   }
   return current;
 }
@@ -200,27 +206,35 @@ void delete_pos(BTree **ptrPtr, unsigned int pos) {
   if ((*ptrPtr) == NULL) { // caso in cui non abbia trovato il nodo desiderato.
     return; 
   } else if ((*ptrPtr)->valore == pos) { // caso base
-    // elimino i collegamenti di questo nodo 
-    // lo dealloco
-    // ritorno a quello precedente.
+    
+    BTree *tmp_ntd = (*ptrPtr); // creazione nodo temporaneo.
+    
+    if ((*ptrPtr)->leftPtr != NULL && (*ptrPtr)->rightPtr != NULL) { // meccanismo massimo foglia.
+      
+      // meccanismo massimo -> foglia (basato su osservazioni sulla struttura dati).
+      BTree *maxPtr = NULL;
+      maxPtr = adress_max((*ptrPtr)->leftPtr); 
+      maxPtr->rightPtr = tmp_ntd->rightPtr;
+      printf("il nodo avente valore %d viene collegato al nodo avente valore %d.\n", maxPtr->valore, maxPtr->rightPtr->valore);
+
+      // settare la nuova radice del sotto albero
+      (*ptrPtr) = (*ptrPtr)->leftPtr;
+      printf("nuova radice del sotto albero avente come radice il nodo da eliminare: %d\n", (*ptrPtr)->valore);
+    } else {
+      if ((*ptrPtr)->leftPtr != NULL)
+        (*ptrPtr) = (*ptrPtr)->leftPtr;
+      else
+        (*ptrPtr) = (*ptrPtr)->rightPtr;
+    }
+    free(tmp_ntd);
     return; // ritorno al nodo precedente.
-  } else {
+  } else { // visita in profondita del nodo desiderato
     if (pos <= (*ptrPtr)->valore) {
       // andiamo a sinistra.
       delete_pos(&((*ptrPtr)->leftPtr), pos);
-      
-      // nel caso l'if precedente ritorni
-      // l'esecuzione della procedura riprende
-      // da questo punto in poi.
-      
     } else {
       // andiamo a destra.
       delete_pos(&((*ptrPtr)->rightPtr), pos);
-      
-      // nel caso l'if precedente ritorni
-      // l'esecuzione della procedura riprende
-      // da questo punto in poi.
-
     }
   }
 }
