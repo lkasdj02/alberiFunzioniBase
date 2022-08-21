@@ -19,10 +19,10 @@ void delete_pos(BTree **ptrPtr, unsigned int pos);
 BTree *ordinsert_rec_valore(BTree *ptr, int val);
 unsigned int size(BTree *ptr); // trova quanti nodi ha l'albero.
 int min(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
-int max(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
-
+ 
 // funzioni HELPER
-// void meccanismo_precedente(BTree **ptrPtr, unsigned int pos);
+int max(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
+BTree *adress_max(BTree *ptrPtr);
 
 // opzioni globali.
 char simmetrica[20]  = "simmetrica"; 
@@ -51,7 +51,8 @@ int main() {
   printf("\nL'albero contiene %d? %d\n", target, search_rec(albero, target));
   printf("il numero di nodi che l'albero detiene: %d\n", size(albero));
   printf("il valore minimo che l'albero detiene: %d\n", min(albero));
-  printf("il valore massimo che l'albero detiene: %d\n", max(albero));
+
+  printf("il valore massimo che l'albero detiene: %d. \n si trova all'indirizzo di heap: %p.\n", (adress_max(albero))->valore, adress_max(albero));
 
   // delete_pos(&albero, 2);
 }
@@ -161,6 +162,14 @@ int max(BTree *ptrPtr) {
   return ptrPtr->valore;
 }
 
+BTree *adress_max(BTree *ptrPtr) {
+  BTree *current = ptrPtr;
+  while(ptrPtr->rightPtr != NULL) {
+    ptrPtr = ptrPtr->rightPtr; // questo vale per un'osservazione fatta.
+  }
+  return current;
+}
+
 /*
 void delete_pos(BTree **ptrPtr, unsigned int pos) {
   if((*ptrPtr) == NULL) { // caso base... nodo non trovato
@@ -190,7 +199,10 @@ void delete_pos(BTree **ptrPtr, unsigned int pos) {
 void delete_pos(BTree **ptrPtr, unsigned int pos) {
   if ((*ptrPtr) == NULL) { // caso in cui non abbia trovato il nodo desiderato.
     return; 
-  } else if ((*ptrPtr)->valore == pos) {
+  } else if ((*ptrPtr)->valore == pos) { // caso base
+    // elimino i collegamenti di questo nodo 
+    // lo dealloco
+    // ritorno a quello precedente.
     return; // ritorno al nodo precedente.
   } else {
     if (pos <= (*ptrPtr)->valore) {
@@ -208,7 +220,7 @@ void delete_pos(BTree **ptrPtr, unsigned int pos) {
       // nel caso l'if precedente ritorni
       // l'esecuzione della procedura riprende
       // da questo punto in poi.
-      
+
     }
   }
 }
