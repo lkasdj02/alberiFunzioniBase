@@ -57,8 +57,7 @@ int main() {
   printf("il valore massimo che il sotto albero di sinistra detiene: %d. \n si trova all'indirizzo di heap: %p.\n", (adress_max(albero->leftPtr))->valore, adress_max(albero));
 
   // eliminazione di un nodo
-  delete_pos(&albero, 6);
-  delete_pos(&albero, 4);
+  delete_pos(&albero, 3);
   print_simmetry(albero);
   printf("\n");
 
