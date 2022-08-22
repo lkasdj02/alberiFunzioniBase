@@ -23,6 +23,7 @@ int min(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
 // funzioni HELPER
 int max(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
 BTree *adress_max(BTree *ptrPtr);
+int depth(BTree *ptr);
 
 // opzioni globali.
 char simmetrica[20]  = "simmetrica"; 
@@ -42,7 +43,9 @@ int main() {
 
   albero = ordinsert_rec_valore(albero, 2);
   albero = ordinsert_rec_valore(albero, 1);
+  albero = ordinsert_rec_valore(albero, 10);
   albero = ordinsert_rec_valore(albero, 6);
+  albero = ordinsert_rec_valore(albero, 5);
   albero = ordinsert_rec_valore(albero, 3);
 
   // stampa ricorsiva dei nodi inseriti.
@@ -57,10 +60,14 @@ int main() {
   printf("il valore massimo che il sotto albero di sinistra detiene: %d. \n si trova all'indirizzo di heap: %p.\n", (adress_max(albero->leftPtr))->valore, adress_max(albero));
 
   // eliminazione di un nodo
+  /*
   delete_pos(&albero, 3);
   print_simmetry(albero);
   printf("\n");
+  */
 
+  // test funzione depth
+  printf("la profondita' dell'albero equivale a: %d\n", depth(albero));
 }
 
 void init(BTree **ptrPtr) {
@@ -236,4 +243,24 @@ void delete_pos(BTree **ptrPtr, unsigned int pos) {
       delete_pos(&((*ptrPtr)->rightPtr), pos);
     }
   }
+}
+
+int depth(BTree *ptr) {
+  // CASO BASE
+  int p_s = 0;
+  int p_d = 0;
+  if (ptr->leftPtr == NULL && ptr->rightPtr == NULL) {
+    return 0;
+  } else {
+    
+    if (ptr->leftPtr != NULL)
+      p_s = 1 + depth(ptr->leftPtr);
+    if (ptr->rightPtr != NULL)
+      p_d = 1 + depth(ptr->rightPtr);
+  }
+  // confronto finale
+  if (p_s <= p_d)
+    return p_d;
+  else
+    return p_s;
 }
