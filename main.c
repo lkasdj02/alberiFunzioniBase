@@ -19,7 +19,8 @@ void delete_pos(BTree **ptrPtr, unsigned int pos);
 BTree *ordinsert_rec_valore(BTree *ptr, int val);
 unsigned int size(BTree *ptr); // trova quanti nodi ha l'albero.
 int min(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
- 
+BTree *invert(BTree *root); 
+
 // funzioni HELPER
 int max(BTree *ptrPtr); // trova il valore minimo di tutto l'albero
 BTree *adress_max(BTree *ptrPtr);
@@ -45,7 +46,7 @@ int main() {
   albero = ordinsert_rec_valore(albero, 1);
   albero = ordinsert_rec_valore(albero, 10);
   albero = ordinsert_rec_valore(albero, 6);
-  albero = ordinsert_rec_valore(albero, 5);
+  albero = ordinsert_rec_valore(albero, 15);
   albero = ordinsert_rec_valore(albero, 3);
 
   // stampa ricorsiva dei nodi inseriti.
@@ -67,7 +68,11 @@ int main() {
   */
 
   // test funzione depth
-  printf("la profondita' dell'albero equivale a: %d\n", depth(albero));
+  // printf("la profondita' dell'albero equivale a: %d\n", depth(albero));
+
+  albero = invert(albero);
+  printf("albero invertito: ");
+  print_simmetry(albero);
 }
 
 void init(BTree **ptrPtr) {
@@ -263,4 +268,19 @@ int depth(BTree *ptr) {
     return p_d;
   else
     return p_s;
+}
+
+
+BTree *invert(BTree *root) {
+  if (root->leftPtr != NULL || root->rightPtr != NULL) {
+    // faccio lo scambio.
+    BTree *tmp = root->rightPtr;
+    root->rightPtr = root->leftPtr;
+    root->leftPtr = tmp;
+
+    // inverto sotto alberi di sinistra e sotto alberi di destra.
+    invert(root->leftPtr);
+    invert(root->rightPtr);
+  }
+  return root;
 }
